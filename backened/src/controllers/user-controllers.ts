@@ -1,5 +1,8 @@
 import UserModel from "../models/UserModel.js"
 import { compare, hash } from "bcrypt";
+import { createToken } from "../utils/token-manager.js";
+import { sign } from "jsonwebtoken";
+import { COOKIE_NAME } from "../utils/constants.js";
 
 export const getAllUsers = async (req,res) =>{
     try {
@@ -29,6 +32,26 @@ export const userSignup = async (req, res) => {
       const newUser = new UserModel({ name, email, password: hashedPassword });
   
       await newUser.save();
+
+      res.clearCookie(COOKIE_NAME,{
+        path:"/",
+        domain:"localhost",
+        httpOnly:true,
+        signed:true,
+    });
+    
+    //create and store token
+    const token= createToken(newUser._id.toString(),newUser.email , "7d");
+    const expires = new Date();
+    expires.setDate(expires.getDate() + 7);
+    res.cookie(COOKIE_NAME,token,{
+        path:"/",
+        domain:"localhost",
+        expires,
+        httpOnly:true,
+        signed:true,
+    })
+  
   
       return res.status(200).json({ msg: "User SignedUp Successfully!!",id:newUser._id.toString() });
     } catch (error) {
@@ -49,6 +72,25 @@ export const userSignup = async (req, res) => {
         if(!isPasswordCorrect){
             return res.status(400).json({msg:"Password is Incorrect"});
         }
+
+        res.clearCookie(COOKIE_NAME,{
+            path:"/",
+            domain:"localhost",
+            httpOnly:true,
+            signed:true,
+        });
+
+        const token= createToken(User._id.toString(),User.email , "7d");
+        const expires = new Date();//current date  
+        expires.setDate(expires.getDate() + 7);
+        res.cookie(COOKIE_NAME,token,{ //to send the cookie from backend to frontend we use "cookie-parser "package
+            path:"/", //inside the root directory cookies will store
+            domain:"localhost",
+            expires,
+            httpOnly:true,
+            signed:true,
+        })
+        
          return res.status(200).json({msg:"User loggedIn Successfully!!",id:User._id.toString()});
     } catch (error) {
       return res.status(500).json({ msg: "Some error occurred during user signup", error });

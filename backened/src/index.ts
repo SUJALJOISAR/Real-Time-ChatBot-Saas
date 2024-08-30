@@ -5,9 +5,11 @@ app.get("/",(req,res)=>{
    res.status(200).send("Welcome to the Real-time Chatbot");
 });
 
+//connections and listeneres
+const PORT= process.env.PORT || 5000;
 
 connectToDatabase().then(()=>{
-  app.listen(5000,()=>{
+  app.listen(PORT,()=>{
     console.log("server is open in port 5000");
   });
 }).catch((error)=>{

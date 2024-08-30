@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { randomUUID } from "crypto";
+import { randomUUID } from "crypto";// generate the random ID for the chats
 
 const chatSchema = new mongoose.Schema({
     id: { type: String, default: randomUUID(), },

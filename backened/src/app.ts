@@ -20,7 +20,7 @@ app.use(cookieParser(process.env.COOKIE_SECRET));// to directly set the cookies 
 
 //remove it in production
 app.use(morgan("dev"));
-//just provide log description like what type of request was handled, what was the response, and statuscode
+//just provide log description in terminal like what type of request was handled, what was the response, and statuscode
 
 //for routes
 app.use("/api/v1/",appRouter);
